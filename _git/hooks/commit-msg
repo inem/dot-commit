@@ -69,11 +69,13 @@ end
 begin
   debug_log.puts "DEBUG: sending request to OpenAI..."
   resp = client.completions(
-    engine: 'gpt-4o-mini',
-    prompt: prompt,
-    max_tokens: 20,
-    temperature: 0.3,
-    stop: ["\n", "\r", "\r\n"]
+    parameters: {
+      model: 'gpt-4o-mini',
+      prompt: prompt,
+      max_tokens: 20,
+      temperature: 0.3,
+      stop: ["\n", "\r", "\r\n"]
+    }
   )
   new_msg = resp.dig('choices', 0, 'text')&.strip
   debug_log.puts "DEBUG: got response: '#{new_msg}'"
