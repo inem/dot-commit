@@ -17,7 +17,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 ```sh
 curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/install.sh | sh
 
-## Installation
+## Regular Installation
 
 1. Copy the `commit_msg` script to your repository's `.git/hooks/` directory as `commit-msg`.
 2. Make sure the script is executable:
