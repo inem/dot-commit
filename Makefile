@@ -17,6 +17,9 @@ release:
 	git tag v0.0.$(ARGS)
 	git push origin v0.0.$(ARGS)
 
+open:
+	open https://github.com/inem/dotdotdot
+
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 %:
 	@:
