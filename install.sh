@@ -16,7 +16,7 @@ curl -fsSL "$HOOK_URL" -o "$HOOK_PATH"
 chmod +x "$HOOK_PATH"
 echo "Hook installed to $HOOK_PATH"
 
-echo "Downloading Go binary..."
+echo "Downloading Go binary from GitHub Releases..."
 curl -fsSL "$BIN_URL" -o "$BIN_PATH"
 chmod +x "$BIN_PATH"
 echo "Binary installed to $BIN_PATH"
