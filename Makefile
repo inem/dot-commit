@@ -13,7 +13,7 @@ install-hook:
 build:
 	go build -o release/commit-msg-go commit-msg.go
 
-release 
+release:
 	git tag v0.0.$(ARGS)
 	git push origin v0.0.$(ARGS)
 
