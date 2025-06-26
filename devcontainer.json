@@ -1,0 +1,8 @@
+# For GitHub Codespaces go to Settings → Codespaces → Secrets → Add secret OPENAI_API_KEY
+
+{
+  "secrets": ["OPENAI_API_KEY"],
+  "containerEnv": {
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}"
+  }
+}
