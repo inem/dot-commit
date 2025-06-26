@@ -18,6 +18,11 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 ```
 
+```sh
+curl -fsSL https://instll.sh/inem/dotdotdot | sh
+```
+
+
 ## Manual Installation (Go version)
 
 1. Clone this repository and enter the directory.
