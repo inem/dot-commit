@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'tempfile'
+require 'open3'
+require 'openai'
+require 'fileutils'
+
+MSG_FILE = ARGV[0] or abort 'usage: commit-msg <path>'
+text     = File.read(MSG_FILE).strip
+
+# Debug log
+debug_log = File.open('.git/commit-msg-debug.log', 'a')
+debug_log.puts "=== #{Time.now} ==="
+debug_log.puts "DEBUG: commit message = '#{text}'"
+
+# Only process if message is "..." or ".."
+unless text == '...' || text == '..'
+  debug_log.puts "DEBUG: message is not '...' or '..', exiting"
+  debug_log.close
+  exit 0
+end
+
+debug_log.puts "DEBUG: proceeding with AI generation for '#{text}'"
+
+# Extensions considered as "static" files
+STATIC_EXT = %w[css scss html htm png jpg jpeg gif svg].freeze
+
+if text == '..'
+  # 1. For ".." - only file list mode
+  debug_log.puts "DEBUG: using file list only mode"
+  all_files, = Open3.capture2('git', 'diff', '--cached', '--name-only')
+  static_files = all_files.lines.select { |f| STATIC_EXT.any? { |ext| f.strip.end_with?(".#{ext}") } }
+  non_static_files = all_files.lines.reject { |f| STATIC_EXT.any? { |ext| f.strip.end_with?(".#{ext}") } }
+
+  body = +"FILES CHANGED:\n" << non_static_files.join
+  body << "\nSTATIC FILES CHANGED:\n" << static_files.join unless static_files.empty?
+else
+  # 2. For "..." - full diff mode
+  debug_log.puts "DEBUG: using full diff mode"
+  exclude_args = STATIC_EXT.map { |e| ":(exclude)*.#{e}" }
+  include_args = STATIC_EXT.map { |e| "*.#{e}" }
+
+  diff,  = Open3.capture2('git', 'diff', '--cached', '--binary', *exclude_args)
+  names, = Open3.capture2('git', 'diff', '--cached', '--name-only', *include_args)
+
+  body = +diff << "\nSTATIC FILES CHANGED:\n" << names
+  body = body.byteslice(0, 8_000) # trim to 8KB
+end
+
+# 2. Send to OpenAI
+client = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
+
+if text == '..'
+  prompt = <<~PROMPT
+    Generate a short (≤70 chars) git commit message based on file list.
+    If only static files changed (css/html/images) - note this.
+    #{body}
+  PROMPT
+else
+  prompt = <<~PROMPT
+    Write a git commit message (max 70 chars) describing these code changes:
+    #{body}
+
+    Message:
+  PROMPT
+end
+
+begin
+  debug_log.puts "DEBUG: sending request to OpenAI..."
+  resp = client.completions(
+    engine: 'gpt-4o-mini',
+    prompt: prompt,
+    max_tokens: 20,
+    temperature: 0.3,
+    stop: ["\n", "\r", "\r\n"]
+  )
+  new_msg = resp.dig('choices', 0, 'text')&.strip
+  debug_log.puts "DEBUG: got response: '#{new_msg}'"
+  File.write(MSG_FILE, new_msg + "\n") unless new_msg.to_s.empty?
+  debug_log.puts "DEBUG: wrote new message to file"
+rescue StandardError => e
+  debug_log.puts "DEBUG: AI error: #{e}; оставляю «…»"
+end
+
+debug_log.close
+exit 0
