@@ -16,6 +16,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/install.sh | sh
+```
 
 ## Regular Installation
 
@@ -39,7 +40,7 @@ curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/inst
 ## Requirements
 
 - Ruby
-- The `openai` Ruby gem (`gem install openai`)
+- The `openai` Ruby gem (`gem install openai`) → openai-0.10.0
 - An OpenAI API key
 
 ## Notes
