@@ -15,7 +15,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 ## Quick Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 ```
 
 ## Manual Installation (Go version)
@@ -25,10 +25,11 @@ curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/inst
    ```bash
    make build
    ```
-3. Install the hook (this will overwrite `.git/hooks/commit-msg`):
+3. Install the hook and binary (this will overwrite `.git/hooks/commit-msg` and `.git/hooks/commit-msg-go`):
    ```bash
    cp _git/hooks/commit-msg .git/hooks/commit-msg
-   chmod +x .git/hooks/commit-msg
+   cp release/commit-msg-go .git/hooks/commit-msg-go
+   chmod +x .git/hooks/commit-msg .git/hooks/commit-msg-go
    ```
 4. Set your OpenAI API key in the environment:
    ```bash

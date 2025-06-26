@@ -11,4 +11,4 @@ install-hook:
 	curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 
 build:
-	go build -o _git/hooks/commit-msg-go commit-msg.go
+	go build -o release/commit-msg-go commit-msg.go
