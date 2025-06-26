@@ -2,7 +2,7 @@
 set -e
 
 HOOK_PATH=".git/hooks/commit-msg"
-REPO_URL="https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/_git/hooks/commit-msg"
+REPO_URL="https://raw.githubusercontent.com/inem/dotdotdot/refs/heads/main/_git/hooks/commit-msg-go"
 
 if [ ! -d .git/hooks ]; then
   echo "Error: .git/hooks directory not found. Please run this script from the root of your git repository."
