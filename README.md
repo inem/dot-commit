@@ -15,11 +15,13 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 ## Quick Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
+curl -fsSL https://instll.sh/inem/dotdotdot | sh
 ```
 
+or
+
 ```sh
-curl -fsSL https://instll.sh/inem/dotdotdot | sh
+curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 ```
 
 
