@@ -1,4 +1,4 @@
-name: Build and Release Go Binary
+name: Build and Release Go Binaries
 
 on:
   push:
@@ -16,13 +16,24 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Build binary
+      - name: Build binaries for all platforms
         run: |
-          go build -o commit-msg-go commit-msg.go
+          GOOS=linux   GOARCH=amd64 go build -o commit-msg-go-linux-amd64 commit-msg.go
+          GOOS=linux   GOARCH=arm64 go build -o commit-msg-go-linux-arm64 commit-msg.go
+          GOOS=darwin  GOARCH=amd64 go build -o commit-msg-go-darwin-amd64 commit-msg.go
+          GOOS=darwin  GOARCH=arm64 go build -o commit-msg-go-darwin-arm64 commit-msg.go
+          GOOS=windows GOARCH=amd64 go build -o commit-msg-go-windows-amd64.exe commit-msg.go
+          GOOS=windows GOARCH=arm64 go build -o commit-msg-go-windows-arm64.exe commit-msg.go
 
-      - name: Upload Release Asset
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: commit-msg-go
+          files: |
+            commit-msg-go-linux-amd64
+            commit-msg-go-linux-arm64
+            commit-msg-go-darwin-amd64
+            commit-msg-go-darwin-arm64
+            commit-msg-go-windows-amd64.exe
+            commit-msg-go-windows-arm64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
