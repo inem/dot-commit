@@ -1,0 +1,29 @@
+name: Build and Upload Go Binary
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binary
+        run: |
+          mkdir -p releases
+          go build -o releases/commit-msg-go commit-msg.go
+
+      - name: Commit and push binary
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add releases/commit-msg-go
+          git commit -m "ci: update commit-msg-go binary [skip ci]" || exit 0
+          git push
