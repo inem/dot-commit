@@ -1,5 +1,7 @@
+include make-*.mk
+
 logs:
-	tail .git/commit-msg-debug.log 
+	tail .git/commit-msg-debug.log
 
 hook:
 	cat .git/hooks/commit-msg
@@ -22,4 +24,3 @@ open:
 
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 %:
-	@:
