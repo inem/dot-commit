@@ -18,22 +18,22 @@ jobs:
 
       - name: Build binaries for all platforms
         run: |
-          GOOS=linux   GOARCH=amd64 go build -o commit-msg-go-linux-amd64 commit-msg.go
-          GOOS=linux   GOARCH=arm64 go build -o commit-msg-go-linux-arm64 commit-msg.go
-          GOOS=darwin  GOARCH=amd64 go build -o commit-msg-go-darwin-amd64 commit-msg.go
-          GOOS=darwin  GOARCH=arm64 go build -o commit-msg-go-darwin-arm64 commit-msg.go
-          GOOS=windows GOARCH=amd64 go build -o commit-msg-go-windows-amd64.exe commit-msg.go
-          GOOS=windows GOARCH=arm64 go build -o commit-msg-go-windows-arm64.exe commit-msg.go
+          GOOS=linux   GOARCH=amd64 go build -o dot-commit-linux-amd64 commit-msg.go
+          GOOS=linux   GOARCH=arm64 go build -o dot-commit-linux-arm64 commit-msg.go
+          GOOS=darwin  GOARCH=amd64 go build -o dot-commit-darwin-amd64 commit-msg.go
+          GOOS=darwin  GOARCH=arm64 go build -o dot-commit-darwin-arm64 commit-msg.go
+          GOOS=windows GOARCH=amd64 go build -o dot-commit-windows-amd64.exe commit-msg.go
+          GOOS=windows GOARCH=arm64 go build -o dot-commit-windows-arm64.exe commit-msg.go
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            commit-msg-go-linux-amd64
-            commit-msg-go-linux-arm64
-            commit-msg-go-darwin-amd64
-            commit-msg-go-darwin-arm64
-            commit-msg-go-windows-amd64.exe
-            commit-msg-go-windows-arm64.exe
+            dot-commit-linux-amd64
+            dot-commit-linux-arm64
+            dot-commit-darwin-amd64
+            dot-commit-darwin-arm64
+            dot-commit-windows-amd64.exe
+            dot-commit-windows-arm64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}

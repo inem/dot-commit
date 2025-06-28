@@ -32,11 +32,11 @@ curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | s
    ```bash
    make build
    ```
-3. Install the hook and binary (this will overwrite `.git/hooks/commit-msg` and `.git/hooks/commit-msg-go`):
+3. Install the hook and binary (this will overwrite `.git/hooks/commit-msg` and `.git/hooks/dot-commit`):
    ```bash
    cp _git/hooks/commit-msg .git/hooks/commit-msg
-   cp release/commit-msg-go .git/hooks/commit-msg-go
-   chmod +x .git/hooks/commit-msg .git/hooks/commit-msg-go
+   cp release/dot-commit .git/hooks/dot-commit
+   chmod +x .git/hooks/commit-msg .git/hooks/dot-commit
    ```
 4. Set your OpenAI API key in the environment:
    ```bash

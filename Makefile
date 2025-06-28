@@ -13,7 +13,7 @@ install-hook:
 	curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 
 build:
-	go build -o release/commit-msg-go commit-msg.go
+	go build -o release/dot-commit commit-msg.go
 
 release:
 	git tag v0.0.$(ARGS)
