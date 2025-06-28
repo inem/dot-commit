@@ -1,4 +1,4 @@
-# dotdotdot
+# dot-commit
 
 ## Overview
 
@@ -9,19 +9,19 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 - **AI-generated commit messages:** Uses OpenAI to suggest commit messages based on your code changes or file list.
 - **Static file awareness:** Recognizes static file changes (CSS, HTML, images) and notes them accordingly.
 - **Two modes:**
-  - `...` (three dots): Generates a commit message based on the full diff of staged changes.
+  - `.` (one dot): Generates a commit message based on the full diff of staged changes.
   - `..` (two dots): Generates a commit message based only on the list of changed files.
 
 ## Quick Install
 
 ```sh
-curl -fsSL https://instll.sh/inem/dotdotdot | sh
+curl -fsSL https://instll.sh/inem/dot-commit | sh
 ```
 
 or
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | sh
 ```
 
 
@@ -45,8 +45,8 @@ curl -fsSL https://raw.githubusercontent.com/inem/dotdotdot/main/install.sh | sh
 
 ## Usage
 
-- When committing, use `git commit -m "..."` or `git commit -m ".."`:
-  - `...` — AI will analyze the full diff and generate a message.
+- When committing, use `git commit -m "."` or `git commit -m ".."`:
+  - `.` — AI will analyze the full diff and generate a message.
   - `..` — AI will analyze only the file list and generate a message.
 - For other commit messages, the hook does nothing.
 

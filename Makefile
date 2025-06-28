@@ -22,5 +22,5 @@ release:
 open:
 	open https://github.com/inem/dotdotdot
 
-ARGS = $(filter-out $@,$(MAKECMDGOALS))
-%:
+uncommit:
+	git reset --soft HEAD^

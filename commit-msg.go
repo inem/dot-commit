@@ -56,9 +56,9 @@ func main() {
 		logDebug(logFile, fmt.Sprintf("commit message = '%s'", text))
 	}
 
-	// Only process if message is "..." or ".."
-	if text != "..." && text != ".." {
-		logDebug(logFile, "message is not '...' or '..', exiting")
+	// Only process if message is "." or ".."
+	if text != "." && text != ".." {
+		logDebug(logFile, "message is not '.' or '..', exiting")
 		return
 	}
 
@@ -97,7 +97,7 @@ func main() {
 			body += "\nSTATIC FILES CHANGED:\n" + strings.Join(staticFiles, "\n")
 		}
 	} else {
-		// 2. For "..." - full diff mode
+		// 2. For "." - full diff mode
 		logDebug(logFile, "using full diff mode")
 
 		// Exclude static files from diff

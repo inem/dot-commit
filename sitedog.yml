@@ -1,0 +1,4 @@
+inem/dot-commit:
+  repo: https://github.com/inem/dot-commit
+  ci: https://github.com/inem/dot-commit/actions
+  releases: https://github.com/inem/dot-commit/releases

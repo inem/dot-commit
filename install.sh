@@ -3,7 +3,7 @@ set -e
 
 HOOK_PATH=".git/hooks/commit-msg"
 BIN_PATH=".git/hooks/commit-msg-go"
-HOOK_URL="https://raw.githubusercontent.com/inem/dotdotdot/main/_git/hooks/commit-msg"
+HOOK_URL="https://raw.githubusercontent.com/inem/dot-commit/main/_git/hooks/commit-msg"
 
 # Detect OS and ARCH
 OS=$(uname | tr '[:upper:]' '[:lower:]')
@@ -35,7 +35,7 @@ case "$OS" in
     ;;
 esac
 
-BIN_URL="https://github.com/inem/dotdotdot/releases/latest/download/commit-msg-go-${OS}-${ARCH}"
+BIN_URL="https://github.com/inem/dot-commit/releases/latest/download/commit-msg-go-${OS}-${ARCH}"
 
 if [ ! -d .git/hooks ]; then
   echo "Error: .git/hooks directory not found. Please run this script from the root of your git repository."

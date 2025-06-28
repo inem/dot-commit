@@ -1,4 +1,4 @@
-module dotdotdot
+module dot-commit
 
 go 1.24.3
 
