@@ -18,12 +18,12 @@ jobs:
 
       - name: Build binaries for all platforms
         run: |
-          GOOS=linux   GOARCH=amd64 go build -o dot-commit-linux-amd64 commit-msg.go
-          GOOS=linux   GOARCH=arm64 go build -o dot-commit-linux-arm64 commit-msg.go
-          GOOS=darwin  GOARCH=amd64 go build -o dot-commit-darwin-amd64 commit-msg.go
-          GOOS=darwin  GOARCH=arm64 go build -o dot-commit-darwin-arm64 commit-msg.go
-          GOOS=windows GOARCH=amd64 go build -o dot-commit-windows-amd64.exe commit-msg.go
-          GOOS=windows GOARCH=arm64 go build -o dot-commit-windows-arm64.exe commit-msg.go
+          GOOS=linux   GOARCH=amd64 go build -o dot-commit-linux-amd64 main.go
+          GOOS=linux   GOARCH=arm64 go build -o dot-commit-linux-arm64 main.go
+          GOOS=darwin  GOARCH=amd64 go build -o dot-commit-darwin-amd64 main.go
+          GOOS=darwin  GOARCH=arm64 go build -o dot-commit-darwin-arm64 main.go
+          GOOS=windows GOARCH=amd64 go build -o dot-commit-windows-amd64.exe main.go
+          GOOS=windows GOARCH=arm64 go build -o dot-commit-windows-arm64.exe main.go
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
