@@ -15,7 +15,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 ## Quick Install
 
 ```sh
-curl -fsSL https://instll.sh/inem/dot-commit | sh
+curl -fsSL instll.sh/inem/dot-commit | sh
 ```
 
 or
