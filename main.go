@@ -100,7 +100,6 @@ func main() {
 		// 2. For "." - full diff mode
 		logDebug(logFile, "using full diff mode")
 
-		// Exclude static files from diff
 		excludeArgs := []string{"diff", "--cached", "--binary"}
 		for _, ext := range staticExt {
 			excludeArgs = append(excludeArgs, fmt.Sprintf(":(exclude)*.%s", ext))
@@ -113,7 +112,6 @@ func main() {
 			return
 		}
 
-		// Get static files list
 		staticCmd := exec.Command("git", "diff", "--cached", "--name-only")
 		staticOutput, err := staticCmd.Output()
 		if err != nil {
@@ -123,8 +121,7 @@ func main() {
 
 		body = string(diffOutput) + "\nSTATIC FILES CHANGED:\n" + string(staticOutput)
 
-		// Trim to 8KB
-		if len(body) > 8000 {
+		if len(body) > 8000 { // Trim to 8KB
 			body = body[:8000]
 		}
 	}
@@ -140,9 +137,50 @@ func main() {
 
 	var prompt string
 	if text == ".." {
-		prompt = fmt.Sprintf("Generate a short (≤70 chars) git commit message based on file list.\nIf only static files changed (css/html/images) - note this.\n%s", body)
+		prompt = fmt.Sprintf(`You are a senior software engineer crafting high–quality, intention‑revealing Git commit titles.
+
+TASK:
+Infer the underlying intent / purpose of the staged changes from ONLY the file list below and output ONE concise commit title (<=70 chars).
+
+GUIDELINES:
+- Focus on WHY / intent, not a mechanical list of filenames.
+- Use imperative mood (Add, Fix, Refactor, Improve, Optimize, Remove, Adjust, Document, Configure, Harden).
+- Infer probable category: feature, fix, refactor, perf, tests, docs, build, chore, style.
+- Avoid bland "update" unless nothing else fits.
+- Do NOT include quotes, punctuation at end, or code fences.
+- Do NOT just say "update X file" unless that is genuinely all.
+- If only static/front-end assets (css/html/images) changed: summarize purpose (e.g. "Refine layout spacing", "Update hero images", "Adjust responsive styles").
+- If mostly tests added: "Add tests for ..." (or similar).
+- If looks like a rename/move: "Rename X to Y" (if clear).
+- Prefer describing effect (e.g. "Fix panic on empty config", "Improve cache invalidation logic").
+- No trailing period. Single line only.
+
+FILE CHANGES:
+%s
+
+Commit message:`, body)
 	} else {
-		prompt = fmt.Sprintf("Write a git commit message (max 70 chars) describing these code changes:\n%s\n\nMessage:", body)
+		prompt = fmt.Sprintf(`You are a senior software engineer writing a single Git commit title.
+
+TASK:
+Analyze the following staged diff (and a list of static files at the end) and produce ONE concise, intention‑revealing commit message line (<=70 chars) capturing the primary purpose (WHY) of the change set.
+
+DIFF & CONTEXT:
+%s
+
+INSTRUCTIONS:
+1. Derive the intent (feature addition, bug fix, refactor, performance improvement, reliability, error handling, security, configuration, cleanup, tests, docs).
+2. Prefer the most meaningful unifying theme over listing multiple trivial edits.
+3. Use imperative mood (Add, Fix, Refactor, Improve, Optimize, Remove, Harden, Document).
+4. Avoid generic "update", "change", "misc", "adjust" if a more specific verb fits.
+5. Do not list filenames unless a rename/move is itself the core change.
+6. If mainly cleanup (whitespace / formatting): "Format code" or "Apply go fmt" (whichever fits).
+7. If adding error handling / validation: describe the protected aspect ("Handle nil X", "Validate Y before Z").
+8. If improving performance: state what was optimized ("Optimize query building", etc.).
+9. If only static asset/style changes: summarize design intent (e.g. "Refine button spacing", "Update hero images").
+10. No trailing period, no quotes, no code fences. Output ONLY the commit title.
+
+Commit message:`, body)
 	}
 
 	logDebug(logFile, "sending request to OpenAI...")
@@ -151,13 +189,11 @@ func main() {
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4oMini,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: prompt,
-				},
-			},
-			MaxTokens:   20,
+			Messages: []openai.ChatCompletionMessage{{
+				Role:    openai.ChatMessageRoleUser,
+				Content: prompt,
+			}},
+			MaxTokens:   40,
 			Temperature: 0.3,
 		},
 	)
@@ -173,6 +209,13 @@ func main() {
 	}
 
 	newMsg := strings.TrimSpace(resp.Choices[0].Message.Content)
+	// Safety: ensure single line & <= 70 chars
+	if idx := strings.IndexAny(newMsg, "\r\n"); idx >= 0 {
+		newMsg = strings.TrimSpace(newMsg[:idx])
+	}
+	if len(newMsg) > 70 {
+		newMsg = strings.TrimSpace(newMsg[:70])
+	}
 	logDebug(logFile, fmt.Sprintf("got response: '%s'", newMsg))
 
 	if newMsg != "" {
