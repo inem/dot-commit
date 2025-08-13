@@ -56,30 +56,32 @@ func main() {
 		logDebug(logFile, fmt.Sprintf("commit message = '%s'", text))
 	}
 
-	// Only process if message is "." or ".."
-	if text != "." && text != ".." {
-		logDebug(logFile, "message is not '.' or '..', exiting")
+	// Modes:
+	// "."  -> full diff including static files (new default)
+	// "-"  -> file list only (replaces old "..")
+	// "#"  -> diff excluding static files (old "." behavior)
+	if text != "." && text != "-" && text != "#" {
+		logDebug(logFile, "message is not one of '.', '-', '#'; exiting")
 		return
 	}
 
 	logDebug(logFile, fmt.Sprintf("proceeding with AI generation for '%s'", text))
 
 	var body string
+	var mode string
 
-	if text == ".." {
-		// 1. For ".." - only file list mode
-		logDebug(logFile, "using file list only mode")
-
+	switch text {
+	case "-":
+		mode = "file_list"
+		logDebug(logFile, "using file list only mode (-)")
 		cmd := exec.Command("git", "diff", "--cached", "--name-only")
 		output, err := cmd.Output()
 		if err != nil {
 			logDebug(logFile, fmt.Sprintf("git command failed: %v", err))
 			return
 		}
-
 		files := strings.Split(strings.TrimSpace(string(output)), "\n")
 		var staticFiles, nonStaticFiles []string
-
 		for _, file := range files {
 			file = strings.TrimSpace(file)
 			if file == "" {
@@ -91,42 +93,57 @@ func main() {
 				nonStaticFiles = append(nonStaticFiles, file)
 			}
 		}
-
 		body = "FILES CHANGED:\n" + strings.Join(nonStaticFiles, "\n")
 		if len(staticFiles) > 0 {
 			body += "\nSTATIC FILES CHANGED:\n" + strings.Join(staticFiles, "\n")
 		}
-	} else {
-		// 2. For "." - full diff mode
-		logDebug(logFile, "using full diff mode")
-
+	case "#":
+		mode = "diff_excluding_static"
+		logDebug(logFile, "using diff excluding static files mode (#)")
+		// old behavior: exclude static files from diff, append list at end
 		excludeArgs := []string{"diff", "--cached", "--binary"}
 		for _, ext := range staticExt {
 			excludeArgs = append(excludeArgs, fmt.Sprintf(":(exclude)*.%s", ext))
 		}
-
 		diffCmd := exec.Command("git", excludeArgs...)
 		diffOutput, err := diffCmd.Output()
 		if err != nil {
 			logDebug(logFile, fmt.Sprintf("git diff command failed: %v", err))
 			return
 		}
-
 		staticCmd := exec.Command("git", "diff", "--cached", "--name-only")
 		staticOutput, err := staticCmd.Output()
 		if err != nil {
 			logDebug(logFile, fmt.Sprintf("git name-only command failed: %v", err))
 			return
 		}
-
 		body = string(diffOutput) + "\nSTATIC FILES CHANGED:\n" + string(staticOutput)
-
-		if len(body) > 8000 { // Trim to 8KB
+		if len(body) > 8000 {
+			body = body[:8000]
+		}
+	case ".":
+		mode = "full_diff"
+		logDebug(logFile, "using full diff including static files mode (.)")
+		diffCmd := exec.Command("git", "diff", "--cached", "--binary")
+		diffOutput, err := diffCmd.Output()
+		if err != nil {
+			logDebug(logFile, fmt.Sprintf("git diff command failed: %v", err))
+			return
+		}
+		// Also capture name-only list for potential static awareness (not excluding here)
+		nameOnlyCmd := exec.Command("git", "diff", "--cached", "--name-only")
+		nameOnlyOutput, err := nameOnlyCmd.Output()
+		if err != nil {
+			logDebug(logFile, fmt.Sprintf("git name-only command failed: %v", err))
+			return
+		}
+		body = string(diffOutput) + "\nFILES CHANGED:\n" + string(nameOnlyOutput)
+		if len(body) > 8000 {
 			body = body[:8000]
 		}
 	}
 
-	// 2. Send to OpenAI
+	// Send to OpenAI
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		logDebug(logFile, "OPENAI_API_KEY not set")
@@ -136,7 +153,7 @@ func main() {
 	client := openai.NewClient(apiKey)
 
 	var prompt string
-	if text == ".." {
+	if mode == "file_list" {
 		prompt = fmt.Sprintf(`You are a senior software engineer crafting high–quality, intention‑revealing Git commit titles.
 
 TASK:
@@ -159,11 +176,11 @@ FILE CHANGES:
 %s
 
 Commit message:`, body)
-	} else {
+	} else { // diff modes
 		prompt = fmt.Sprintf(`You are a senior software engineer writing a single Git commit title.
 
 TASK:
-Analyze the following staged diff (and a list of static files at the end) and produce ONE concise, intention‑revealing commit message line (<=70 chars) capturing the primary purpose (WHY) of the change set.
+Analyze the following staged diff (and file list at the end) and produce ONE concise, intention‑revealing commit message line (<=70 chars) capturing the primary purpose (WHY) of the change set.
 
 DIFF & CONTEXT:
 %s
@@ -209,7 +226,6 @@ Commit message:`, body)
 	}
 
 	newMsg := strings.TrimSpace(resp.Choices[0].Message.Content)
-	// Safety: ensure single line & <= 70 chars
 	if idx := strings.IndexAny(newMsg, "\r\n"); idx >= 0 {
 		newMsg = strings.TrimSpace(newMsg[:idx])
 	}

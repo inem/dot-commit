@@ -6,17 +6,16 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 
 ## Features
 
-- **AI-generated commit messages:** Uses OpenAI to suggest commit messages based on your code changes or file list.
-- **Static file awareness:** Recognizes static file changes (CSS, HTML, images) and notes them accordingly.
-- **Two modes:**
-  - `.` (one dot): Generates a commit message based on the full diff of staged changes.
-  - `..` (two dots): Generates a commit message based only on the list of changed files.
+**Modes:**
+   - `.` (dot): Full diff (includes static assets) -> richest context.
+   - `-` (dash): File list only (old `..` behavior).
+   - `#` (hash): Diff excluding static assets (old `.` behavior) with their names listed separately.
 
 ## Quick Install
 
-```sh
-curl -fsSL instll.sh/inem/dot-commit | sh
-```
+   - `.` — analyze full diff (includes static assets like css/html/images).
+   - `-` — analyze only the file list (no diff body).
+   - `#` — analyze diff excluding static/static-like files; list of all changed files appended.
 
 or
 
