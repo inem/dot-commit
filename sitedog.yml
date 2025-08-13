@@ -2,3 +2,6 @@ inem/dot-commit:
   repo: https://github.com/inem/dot-commit
   ci: https://github.com/inem/dot-commit/actions
   releases: https://github.com/inem/dot-commit/releases
+
+  development: 
+    codespace: https://orange-enigma-6vgg5wrqfx476.github.dev/
