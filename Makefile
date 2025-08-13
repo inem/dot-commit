@@ -15,6 +15,7 @@ install-hook:
 build:
 	go build -o release/dot-commit main.go
 
+.PHONY: release
 release:
 	git tag v0.0.$(ARGS)
 	git push origin v0.0.$(ARGS)
