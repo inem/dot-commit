@@ -13,9 +13,9 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 
 ## Quick Install
 
-   - `.` — analyze full diff (includes static assets like css/html/images).
-   - `-` — analyze only the file list (no diff body).
-   - `#` — analyze diff excluding static/static-like files; list of all changed files appended.
+```sh
+curl -fsSL instll.sh/inem/dot-commit | sh
+```
 
 or
 
