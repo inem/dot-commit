@@ -45,14 +45,14 @@ curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | s
 ## Usage
 
 - When committing, use `git commit -m "."` AI will analyze the full diff and generate a message.
-- For `-` and `#`  modes - see above "Modes" section.
+- For `-` and `#`  modes - [see above]([url](https://github.com/inem/dot-commit/tree/main?tab=readme-ov-file#features)).
 - For other commit messages, the hook does nothing.
 
 ## Requirements
 
 - Go 1.21+
 - The `github.com/sashabaranov/go-openai` Go module (installed automatically by `make build`)
-- An OpenAI API key
+- An OpenAI API key in OPENAI_API_KEY environment variable
 
 ## Notes
 
