@@ -44,9 +44,8 @@ curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | s
 
 ## Usage
 
-- When committing, use `git commit -m "."` or `git commit -m ".."`:
-  - `.` — AI will analyze the full diff and generate a message.
-  - `..` — AI will analyze only the file list and generate a message.
+- When committing, use `git commit -m "."` AI will analyze the full diff and generate a message.
+- For `-` and `#`  modes - see above "Modes" section.
 - For other commit messages, the hook does nothing.
 
 ## Requirements
