@@ -9,7 +9,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 **Modes:**
    - `.` (dot): Full diff (includes static assets) -> richest context.
    - `-` (dash): File list only 
-   - `#` (hash): Diff excluding static assets (old `.` behavior) with their names listed separately.
+   - `#` (hash): Diff excluding static assets with their names listed separately.
 
 ## Quick Install
 
