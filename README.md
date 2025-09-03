@@ -45,7 +45,7 @@ curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | s
 ## Usage
 
 - When committing, use `git commit -m "."` AI will analyze the full diff and generate a message.
-- For `-` and `#`  modes - [see above]([url](https://github.com/inem/dot-commit/tree/main?tab=readme-ov-file#features)).
+- For `-` and `#`  modes - [see above](https://github.com/inem/dot-commit/tree/main?tab=readme-ov-file#features).
 - For other commit messages, the hook does nothing.
 
 ## Requirements
