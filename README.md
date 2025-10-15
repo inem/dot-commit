@@ -8,7 +8,7 @@ This repository includes a custom Git commit message hook powered by OpenAI. The
 
 **Modes:**
    - `.` (dot): Full diff (includes static assets) -> richest context.
-   - `-` (dash): File list only 
+   - `-` (dash): File list only
    - `#` (hash): Diff excluding static assets with their names listed separately.
 
 ## Quick Install
@@ -20,7 +20,7 @@ curl -fsSL instll.sh/inem/dot-commit | sh
 or
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/inem/dot-commit/main/install | sh
 ```
 
 
